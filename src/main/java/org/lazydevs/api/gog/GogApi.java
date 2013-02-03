@@ -90,8 +90,6 @@ public class GogApi {
 
         HttpResponse response = HttpClientUtil.post(client, context, URL_LOGIN, params);
 
-        this.loggedIn = response.getStatusLine().getStatusCode() == 200;
-
         try {
             EntityUtils.consume(response.getEntity());
         } catch (IOException e) {
