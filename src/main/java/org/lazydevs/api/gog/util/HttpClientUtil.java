@@ -1,4 +1,4 @@
-package org.lazydevs.pixelwallet.api.gog.util;
+package org.lazydevs.api.gog.util;
 
 import org.apache.http.Consts;
 import org.apache.http.HttpResponse;
@@ -14,7 +14,7 @@ import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.conn.ssl.X509HostnameVerifier;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
-import org.lazydevs.pixelwallet.api.gog.GogApiException;
+import org.lazydevs.api.gog.GogApiException;
 
 import javax.net.ssl.*;
 import java.io.IOException;

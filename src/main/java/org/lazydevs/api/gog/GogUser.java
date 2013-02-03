@@ -1,4 +1,4 @@
-package org.lazydevs.pixelwallet.api.gog;
+package org.lazydevs.api.gog;
 
 import org.codehaus.jackson.JsonNode;
 

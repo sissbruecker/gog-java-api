@@ -1,4 +1,4 @@
-package org.lazydevs.pixelwallet.api.gog;
+package org.lazydevs.api.gog;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

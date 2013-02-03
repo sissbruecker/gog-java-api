@@ -1,4 +1,4 @@
-package org.lazydevs.pixelwallet.api.gog;
+package org.lazydevs.api.gog;
 
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
@@ -17,7 +17,7 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.lazydevs.pixelwallet.api.gog.util.HttpClientUtil;
+import org.lazydevs.api.gog.util.HttpClientUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
