@@ -48,8 +48,6 @@ public class GogApi {
     private HttpContext context;
     private CookieStore cookies;
 
-    private HttpHost proxy;
-
     private boolean loggedIn;
 
     public boolean isLoggedIn() {
@@ -62,17 +60,19 @@ public class GogApi {
         this.context = new BasicHttpContext();
         this.cookies = new BasicCookieStore();
 
-        HttpClientUtil.initHttpsNoCertNoHostVerification(client, 443);
-
         this.context.setAttribute(ClientContext.COOKIE_STORE, this.cookies);
 
         client.setRedirectStrategy(new LaxRedirectStrategy());
 
         client.getParams().setParameter(ClientPNames.COOKIE_POLICY, CookiePolicy.BROWSER_COMPATIBILITY);
 
-        proxy = new HttpHost("localhost", 8888);
+        /* For capturing traffic with Fiddler
+        HttpClientUtil.initHttpsNoCertNoHostVerification(client, 443);
+
+        HttpHost proxy = new HttpHost("localhost", 8888);
 
         client.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
+         */
     }
 
     public void login(String username, String password) {
@@ -87,8 +87,6 @@ public class GogApi {
         params.add(new BasicNameValuePair(PARAM_PASSWORD, password));
         params.add(new BasicNameValuePair(PARAM_UNLOCK_SETTINGS, "1"));
         params.add(new BasicNameValuePair(PARAM_BUK, user.getBuk()));
-
-        client.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
 
         HttpResponse response = HttpClientUtil.post(client, context, URL_LOGIN, params);
 

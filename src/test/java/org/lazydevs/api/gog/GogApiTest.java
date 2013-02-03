@@ -21,7 +21,7 @@ public class GogApiTest {
 
         GogApi api = new GogApi();
 
-        api.login("your-username", "your-password");
+        api.login(System.getProperty("gog-user"), System.getProperty("gog-password"));
 
         Assert.assertTrue(api.isLoggedIn());
 
