@@ -1,9 +1,11 @@
-package org.lazydevs.api.gog;
+package org.lazydevs.api.gog.parsing;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.lazydevs.api.gog.model.GogGame;
+import org.lazydevs.api.gog.util.Asserts;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +34,7 @@ public class GogAccountPage {
         // Select all game shelf divs
         Element shelfElement = document.select("#shelfGamesListAll").first();
 
-        if(shelfElement == null)
-            throw new GogApiException("Could not find shelf element. selector=div.shelfGamesListAll");
+        Asserts.assertNotNull(shelfElement, "Could not find shelf element: #shelfGamesListAll");
 
         Elements gameElements = shelfElement.select("div.shelf_game");
 
@@ -41,9 +42,11 @@ public class GogAccountPage {
 
             GogGame game = new GogGame();
 
+            Asserts.assertTrue(gameElement.hasAttr("data-gameid"), "Shelf game element has no id attribute: data-gameid");
+            Asserts.assertTrue(gameElement.hasAttr("data-gameindex"), "Shelf game element has no index attribute: data-gameindex");
+
             game.setId(gameElement.attr("data-gameid"));
             game.setKey(gameElement.attr("data-gameindex"));
-            game.setTitle(game.getKey());
 
             Element coverImageElement = gameElement.select("img.shelf_game_box").first();
 

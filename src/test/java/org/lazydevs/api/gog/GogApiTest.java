@@ -2,6 +2,8 @@ package org.lazydevs.api.gog;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.lazydevs.api.gog.model.DetailedGogGame;
+import org.lazydevs.api.gog.model.GogGame;
 
 import java.util.List;
 
@@ -17,16 +19,47 @@ import java.util.List;
 public class GogApiTest {
 
     @Test
-    public void testLoginAndList() throws Exception {
+    public void testLogin() throws Exception {
 
         GogApi api = new GogApi();
 
         api.login(System.getProperty("gog-user"), System.getProperty("gog-password"));
 
         Assert.assertTrue(api.isLoggedIn());
+    }
+
+    @Test
+    public void testListGames() throws Exception {
+
+        GogApi api = new GogApi();
+
+        api.login(System.getProperty("gog-user"), System.getProperty("gog-password"));
 
         List<GogGame> games = api.listGames();
 
         Assert.assertTrue(games.size() > 0);
     }
+
+    @Test
+    public void testLoadDetails() throws Exception {
+
+        GogApi api = new GogApi();
+
+        api.login(System.getProperty("gog-user"), System.getProperty("gog-password"));
+
+        GogGame game = new GogGame();
+        game.setId("1207659105");
+        game.setKey("divinity_2_developers_cut");
+
+        DetailedGogGame details = api.loadDetails(game);
+
+        Assert.assertEquals("Divinity 2: Developer's Cut", details.getTitle());
+        Assert.assertEquals(5, details.getDownloaderUrls().size());
+        Assert.assertEquals("Windows installer, English", details.getDownloaderUrls().get(0).getTitle());
+        Assert.assertEquals("en", details.getDownloaderUrls().get(0).getLanguage());
+        Assert.assertEquals("gogdownloader://divinity_2_developers_cut/installer_win_en", details.getDownloaderUrls().get(0).getUrl());
+        Assert.assertEquals("5.9 GB", details.getDownloaderUrls().get(0).getSize());
+        Assert.assertEquals("1.1.0", details.getDownloaderUrls().get(0).getVersion());
+    }
+
 }

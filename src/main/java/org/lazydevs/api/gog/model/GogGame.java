@@ -1,4 +1,4 @@
-package org.lazydevs.api.gog;
+package org.lazydevs.api.gog.model;
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,8 +14,6 @@ public class GogGame {
     private String id;
 
     private String key;
-
-    private String title;
 
     private String coverUrl;
 
@@ -33,14 +31,6 @@ public class GogGame {
 
     public void setKey(String key) {
         this.key = key;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public String getCoverUrl() {

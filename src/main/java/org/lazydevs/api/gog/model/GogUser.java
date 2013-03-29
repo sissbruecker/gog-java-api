@@ -1,4 +1,4 @@
-package org.lazydevs.api.gog;
+package org.lazydevs.api.gog.model;
 
 import org.codehaus.jackson.JsonNode;
 

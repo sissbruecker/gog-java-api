@@ -1,13 +1,11 @@
 package org.lazydevs.api.gog;
 
-import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.params.ClientPNames;
 import org.apache.http.client.params.CookiePolicy;
 import org.apache.http.client.protocol.ClientContext;
-import org.apache.http.conn.params.ConnRoutePNames;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.LaxRedirectStrategy;
@@ -17,6 +15,11 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.lazydevs.api.gog.model.DetailedGogGame;
+import org.lazydevs.api.gog.model.GogGame;
+import org.lazydevs.api.gog.model.GogUser;
+import org.lazydevs.api.gog.parsing.GogAccountPage;
+import org.lazydevs.api.gog.parsing.GogGameShelfDetailsPage;
 import org.lazydevs.api.gog.util.HttpClientUtil;
 
 import java.io.IOException;
@@ -43,6 +46,8 @@ public class GogApi {
     private static final String URL_USER_JSON = "http://www.gog.com/user/ajax/?a=get";
 
     private static final String URL_ACCOUNT = "https://secure.gog.com/account/games/shelf";
+
+    private static final String URL_GAME_SHELF_DETAILS = "https://secure.gog.com/account/ajax?a=gamesShelfDetails&g=%s";
 
     private DefaultHttpClient client;
     private HttpContext context;
@@ -130,8 +135,30 @@ public class GogApi {
         // Parse game list
         List<GogGame> games = new GogAccountPage(responseBody).listGames();
 
-        // TODO: Load game details
-
         return games;
     }
+
+    public DetailedGogGame loadDetails(GogGame game) {
+
+        // Load game shelf details
+        String gameDetailUrl = String.format(URL_GAME_SHELF_DETAILS, game.getId());
+        String responseBody = HttpClientUtil.getBody(client, context, gameDetailUrl);
+
+        // Parse game details
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode jsonGameDetails;
+
+        try {
+            jsonGameDetails = mapper.readTree(responseBody);
+        } catch (IOException e) {
+            throw new GogApiException("Error parsing game shelf details.", e);
+        }
+
+        String html = jsonGameDetails.get("details").get("html").getTextValue();
+        DetailedGogGame details = new GogGameShelfDetailsPage(html).getDetails(game);
+
+        return details;
+    }
+
+
 }
