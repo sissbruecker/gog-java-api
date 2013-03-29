@@ -22,11 +22,20 @@ import java.util.Set;
 public class GogGameShelfDetailsPage {
 
     private static final String SELECTOR_TITLE_LINK = "div.shelf_det_top > h2 > a";
+
     private static final String SELECTOR_DOWNLOADER_LIST = "div.list_down_loader";
-    private static final String SELECTOR_DOWNLOADER_DOWNLOAD = "div.lang-item";
-    private static final String SELECTOR_DOWNLOAD_TITLE = "span.text.normal";
+    private static final String SELECTOR_FILE_LIST = "div.list_down_browser";
+
+    private static final String SELECTOR_WIN_DOWNLOADS = "div.win-download";
+    private static final String SELECTOR_MAC_DOWNLOADS = "div.mac-download";
+
+    private static final String SELECTOR_DOWNLOAD = "div.lang-item";
+    private static final String SELECTOR_DOWNLOAD_PART = "a.list_game_item";
+    private static final String SELECTOR_DOWNLOAD_TITLE_DOWNLOADER = "span.text.normal";
+    private static final String SELECTOR_DOWNLOAD_TITLE_FILE = "span.light_un";
     private static final String SELECTOR_DOWNLOAD_SIZE = "span.size";
     private static final String SELECTOR_DOWNLOAD_VERSION = "span.version";
+
 
     private Document document;
 
@@ -45,62 +54,155 @@ public class GogGameShelfDetailsPage {
 
         details.setTitle(titleLinkElement.text().trim());
 
-        // Downloader URL
+        // Downloader downloads
         Element downloaderListElement = document.select(SELECTOR_DOWNLOADER_LIST).first();
 
         Asserts.assertNotNull(downloaderListElement, "Can not find downloader list element: " + SELECTOR_DOWNLOADER_LIST);
 
-        Elements downloaderDownloadElements = downloaderListElement.select(SELECTOR_DOWNLOADER_DOWNLOAD);
+        Element downloaderWinDownloadElement = downloaderListElement.select(SELECTOR_WIN_DOWNLOADS).first();
 
-        for(Element downloaderDownloadElement : downloaderDownloadElements) {
+        Asserts.assertNotNull(downloaderListElement, "Can not find downloader win element: " + SELECTOR_WIN_DOWNLOADS);
 
-            GogDownload download = new GogDownload();
+        parseDownloaderDownloadsByOs(details, downloaderWinDownloadElement, GogDownload.DownloadOS.Win);
 
-            // Language
-            String language = "";
-            Set<String> classNames = downloaderDownloadElement.classNames();
+        Element downloaderMacDownloadElement = downloaderListElement.select(SELECTOR_MAC_DOWNLOADS).first();
 
-            for(String className : classNames) {
-                if(!className.equalsIgnoreCase("lang-item") && className.startsWith("lang")) {
-                    language = className.substring(5);
-                    break;
-                }
-            }
+        Asserts.assertNotNull(downloaderListElement, "Can not find downloader mac element: " + SELECTOR_MAC_DOWNLOADS);
 
-            download.setLanguage(language);
+        parseDownloaderDownloadsByOs(details, downloaderMacDownloadElement, GogDownload.DownloadOS.Mac);
 
-            // Title
-            Element downloadTitleElement = downloaderDownloadElement.select(SELECTOR_DOWNLOAD_TITLE).first();
+        // File downloads
+        Element fileListElement = document.select(SELECTOR_FILE_LIST).first();
 
-            Asserts.assertNotNull(downloadTitleElement, "Can not find download title element: " + SELECTOR_DOWNLOAD_TITLE);
+        Asserts.assertNotNull(fileListElement, "Can not find file list element: " + SELECTOR_FILE_LIST);
 
-            download.setTitle(downloadTitleElement.text().trim());
+        Element fileWinDownloadElement = fileListElement.select(SELECTOR_WIN_DOWNLOADS).first();
 
-            // Url
-            Element linkElement = downloaderDownloadElement.select("a").first();
+        Asserts.assertNotNull(fileWinDownloadElement, "Can not find file win element: " + SELECTOR_WIN_DOWNLOADS);
 
-            Asserts.assertNotNull(linkElement, "Can not find download link element: a");
+        parseFileDownloadsByOs(details, fileWinDownloadElement, GogDownload.DownloadOS.Win);
 
-            download.setUrl(linkElement.attr("href"));
+        Element fileMacDownloadElement = fileListElement.select(SELECTOR_MAC_DOWNLOADS).first();
 
-            // Size
-            Element sizeElement = downloaderDownloadElement.select(SELECTOR_DOWNLOAD_SIZE).first();
+        Asserts.assertNotNull(fileMacDownloadElement, "Can not find file mac element: " + SELECTOR_MAC_DOWNLOADS);
 
-            Asserts.assertNotNull(sizeElement, "Can not find download size element: " + SELECTOR_DOWNLOAD_SIZE);
-
-            download.setSize(sizeElement.text());
-
-            // Version
-            Element versionElement = downloaderDownloadElement.select(SELECTOR_DOWNLOAD_VERSION).first();
-
-            Asserts.assertNotNull(versionElement, "Can not find download version element: " + SELECTOR_DOWNLOAD_VERSION);
-
-            download.setVersion(versionElement.text());
-
-
-            details.getDownloaderUrls().add(download);
-        }
+        parseFileDownloadsByOs(details, fileMacDownloadElement, GogDownload.DownloadOS.Mac);
 
         return details;
+    }
+
+    private void parseDownloaderDownloadsByOs(DetailedGogGame details, Element osDownloadsElement, GogDownload.DownloadOS os) {
+
+        Elements downloadElements = osDownloadsElement.select(SELECTOR_DOWNLOAD);
+
+        for (Element downloadElement : downloadElements) {
+
+            details.getDownloaderDownloads().add(parseDownloaderDownload(downloadElement, os));
+        }
+    }
+
+    private GogDownload parseDownloaderDownload(Element downloadElement, GogDownload.DownloadOS os) {
+
+        GogDownload download = new GogDownload();
+
+        download.setOs(os);
+
+        // Language
+        download.setLanguage(parseLanguage(downloadElement.classNames()));
+
+        // Title
+        Element downloadTitleElement = downloadElement.select(SELECTOR_DOWNLOAD_TITLE_DOWNLOADER).first();
+
+        Asserts.assertNotNull(downloadTitleElement, "Can not find download title element: " + SELECTOR_DOWNLOAD_TITLE_DOWNLOADER);
+
+        download.setTitle(downloadTitleElement.text().trim());
+
+        // Url
+        Element linkElement = downloadElement.select("a").first();
+
+        Asserts.assertNotNull(linkElement, "Can not find download link element.");
+
+        download.setUrl(linkElement.attr("href"));
+
+        // Size
+        Element sizeElement = downloadElement.select(SELECTOR_DOWNLOAD_SIZE).first();
+
+        Asserts.assertNotNull(sizeElement, "Can not find download size element: " + SELECTOR_DOWNLOAD_SIZE);
+
+        download.setSize(sizeElement.text());
+
+        // Version
+        Element versionElement = downloadElement.select(SELECTOR_DOWNLOAD_VERSION).first();
+
+        Asserts.assertNotNull(versionElement, "Can not find download version element: " + SELECTOR_DOWNLOAD_VERSION);
+
+        download.setVersion(versionElement.text());
+
+        return download;
+    }
+
+    private void parseFileDownloadsByOs(DetailedGogGame details, Element osDownloadsElement, GogDownload.DownloadOS os) {
+
+        Elements downloadElements = osDownloadsElement.select(SELECTOR_DOWNLOAD);
+
+        for (Element fileDownloadElement : downloadElements) {
+
+            // Language
+            String language = parseLanguage(fileDownloadElement.classNames());
+
+            // Parts
+            Elements fileDownloadParts = fileDownloadElement.select(SELECTOR_DOWNLOAD_PART);
+
+            for (Element fileDownloadPart : fileDownloadParts)
+                details.getFileDownloads().add(parseFileDownload(fileDownloadPart, language, os));
+        }
+    }
+
+    private GogDownload parseFileDownload(Element downloadElement, String language, GogDownload.DownloadOS os) {
+
+        GogDownload download = new GogDownload();
+
+        download.setLanguage(language);
+        download.setOs(os);
+
+        // Title
+        Element downloadTitleElement = downloadElement.select(SELECTOR_DOWNLOAD_TITLE_FILE).first();
+
+        Asserts.assertNotNull(downloadTitleElement, "Can not find download title element: " + SELECTOR_DOWNLOAD_TITLE_FILE);
+
+        download.setTitle(downloadTitleElement.text().trim());
+
+        // Url
+        download.setUrl(downloadElement.attr("href"));
+
+        // Size
+        Element sizeElement = downloadElement.select(SELECTOR_DOWNLOAD_SIZE).first();
+
+        Asserts.assertNotNull(sizeElement, "Can not find download size element: " + SELECTOR_DOWNLOAD_SIZE);
+
+        download.setSize(sizeElement.text());
+
+        // Version
+        Element versionElement = downloadElement.select(SELECTOR_DOWNLOAD_VERSION).first();
+
+        Asserts.assertNotNull(versionElement, "Can not find download version element: " + SELECTOR_DOWNLOAD_VERSION);
+
+        download.setVersion(versionElement.text());
+
+        return download;
+    }
+
+    private String parseLanguage(Set<String> classNames) {
+
+        String language = "";
+
+        for (String className : classNames) {
+            if (!className.equalsIgnoreCase("lang-item") && className.startsWith("lang")) {
+                language = className.substring(5);
+                break;
+            }
+        }
+
+        return language;
     }
 }

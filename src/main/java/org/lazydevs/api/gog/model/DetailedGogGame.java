@@ -15,9 +15,9 @@ public class DetailedGogGame extends GogGame {
 
     private String title;
 
-    private List<GogDownload> fileUrls;
+    private List<GogDownload> fileDownloads;
 
-    private List<GogDownload> downloaderUrls;
+    private List<GogDownload> downloaderDownloads;
 
     public String getTitle() {
         return title;
@@ -27,27 +27,27 @@ public class DetailedGogGame extends GogGame {
         this.title = title;
     }
 
-    public List<GogDownload> getFileUrls() {
-        return fileUrls;
+    public List<GogDownload> getFileDownloads() {
+        return fileDownloads;
     }
 
-    public void setFileUrls(List<GogDownload> fileUrls) {
-        this.fileUrls = fileUrls;
+    public void setFileDownloads(List<GogDownload> fileDownloads) {
+        this.fileDownloads = fileDownloads;
     }
 
-    public List<GogDownload> getDownloaderUrls() {
-        return downloaderUrls;
+    public List<GogDownload> getDownloaderDownloads() {
+        return downloaderDownloads;
     }
 
-    public void setDownloaderUrls(List<GogDownload> downloaderUrls) {
-        this.downloaderUrls = downloaderUrls;
+    public void setDownloaderDownloads(List<GogDownload> downloaderDownloads) {
+        this.downloaderDownloads = downloaderDownloads;
     }
 
     public DetailedGogGame(GogGame base) {
         this.setId(base.getId());
         this.setKey(base.getKey());
         this.setCoverUrl(base.getCoverUrl());
-        this.fileUrls = new ArrayList<GogDownload>();
-        this.downloaderUrls = new ArrayList<GogDownload>();
+        this.fileDownloads = new ArrayList<GogDownload>();
+        this.downloaderDownloads = new ArrayList<GogDownload>();
     }
 }

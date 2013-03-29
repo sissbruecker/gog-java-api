@@ -3,6 +3,7 @@ package org.lazydevs.api.gog;
 import org.junit.Assert;
 import org.junit.Test;
 import org.lazydevs.api.gog.model.DetailedGogGame;
+import org.lazydevs.api.gog.model.GogDownload;
 import org.lazydevs.api.gog.model.GogGame;
 
 import java.util.List;
@@ -54,12 +55,22 @@ public class GogApiTest {
         DetailedGogGame details = api.loadDetails(game);
 
         Assert.assertEquals("Divinity 2: Developer's Cut", details.getTitle());
-        Assert.assertEquals(5, details.getDownloaderUrls().size());
-        Assert.assertEquals("Windows installer, English", details.getDownloaderUrls().get(0).getTitle());
-        Assert.assertEquals("en", details.getDownloaderUrls().get(0).getLanguage());
-        Assert.assertEquals("gogdownloader://divinity_2_developers_cut/installer_win_en", details.getDownloaderUrls().get(0).getUrl());
-        Assert.assertEquals("5.9 GB", details.getDownloaderUrls().get(0).getSize());
-        Assert.assertEquals("1.1.0", details.getDownloaderUrls().get(0).getVersion());
+
+        Assert.assertEquals(5, details.getDownloaderDownloads().size());
+        Assert.assertEquals("Windows installer, English", details.getDownloaderDownloads().get(0).getTitle());
+        Assert.assertEquals("en", details.getDownloaderDownloads().get(0).getLanguage());
+        Assert.assertEquals("gogdownloader://divinity_2_developers_cut/installer_win_en", details.getDownloaderDownloads().get(0).getUrl());
+        Assert.assertEquals("5.9 GB", details.getDownloaderDownloads().get(0).getSize());
+        Assert.assertEquals("1.1.0", details.getDownloaderDownloads().get(0).getVersion());
+        Assert.assertEquals(GogDownload.DownloadOS.Win, details.getDownloaderDownloads().get(0).getOs());
+
+        Assert.assertEquals(21, details.getFileDownloads().size());
+        Assert.assertEquals("Windows installer, English (part 1 of 5)", details.getFileDownloads().get(0).getTitle());
+        Assert.assertEquals("en", details.getFileDownloads().get(0).getLanguage());
+        Assert.assertEquals("https://secure.gog.com/downlink/divinity_2_developers_cut/en1installer0", details.getFileDownloads().get(0).getUrl());
+        Assert.assertEquals("2 MB", details.getFileDownloads().get(0).getSize());
+        Assert.assertEquals("1.1.0", details.getFileDownloads().get(0).getVersion());
+        Assert.assertEquals(GogDownload.DownloadOS.Win, details.getFileDownloads().get(0).getOs());
     }
 
 }

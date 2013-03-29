@@ -77,6 +77,7 @@ public class HttpClientUtil {
         return body;
     }
 
+    /*
     public static void initHttpsNoCertNoHostVerification(HttpClient base, int httpsPort) {
         try {
             SSLContext ctx = SSLContext.getInstance("TLS");
@@ -124,4 +125,5 @@ public class HttpClientUtil {
             throw new IllegalStateException("couldn't initialize HttpClient: ", ex);
         }
     }
+    */
 }

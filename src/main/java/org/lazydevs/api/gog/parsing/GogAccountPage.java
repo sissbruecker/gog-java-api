@@ -21,6 +21,10 @@ import java.util.List;
  */
 public class GogAccountPage {
 
+    private static final String SELECTOR_SHELF = "#shelfGamesListAll";
+    private static final String SELECTOR_SHELF_GAME = "div.shelf_game";
+    private static final String SELECTOR_SHELF_GAME_COVER = "img.shelf_game_box";
+
     private Document document;
 
     public GogAccountPage(String htmlContent) {
@@ -32,11 +36,11 @@ public class GogAccountPage {
         List<GogGame> games = new ArrayList<GogGame>();
 
         // Select all game shelf divs
-        Element shelfElement = document.select("#shelfGamesListAll").first();
+        Element shelfElement = document.select(SELECTOR_SHELF).first();
 
-        Asserts.assertNotNull(shelfElement, "Could not find shelf element: #shelfGamesListAll");
+        Asserts.assertNotNull(shelfElement, "Could not find shelf element: " + SELECTOR_SHELF);
 
-        Elements gameElements = shelfElement.select("div.shelf_game");
+        Elements gameElements = shelfElement.select(SELECTOR_SHELF_GAME);
 
         for (Element gameElement : gameElements) {
 
@@ -48,7 +52,7 @@ public class GogAccountPage {
             game.setId(gameElement.attr("data-gameid"));
             game.setKey(gameElement.attr("data-gameindex"));
 
-            Element coverImageElement = gameElement.select("img.shelf_game_box").first();
+            Element coverImageElement = gameElement.select(SELECTOR_SHELF_GAME_COVER).first();
 
             if (coverImageElement != null) {
 

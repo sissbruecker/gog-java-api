@@ -10,6 +10,12 @@ package org.lazydevs.api.gog.model;
  */
 public class GogDownload {
 
+    public enum DownloadOS {
+        Win,
+        Mac,
+        All
+    }
+
     private String title;
 
     private String language;
@@ -19,6 +25,8 @@ public class GogDownload {
     private String size;
 
     private String version;
+
+    private DownloadOS os;
 
     public String getTitle() {
         return title;
@@ -58,5 +66,13 @@ public class GogDownload {
 
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    public DownloadOS getOs() {
+        return os;
+    }
+
+    public void setOs(DownloadOS os) {
+        this.os = os;
     }
 }
