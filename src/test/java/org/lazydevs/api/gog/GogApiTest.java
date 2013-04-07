@@ -1,10 +1,12 @@
 package org.lazydevs.api.gog;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.lazydevs.api.gog.model.DetailedGogGame;
 import org.lazydevs.api.gog.model.GogDownload;
 import org.lazydevs.api.gog.model.GogGame;
+import org.lazydevs.api.gog.model.GogGameBonus;
 
 import java.util.List;
 
@@ -19,22 +21,24 @@ import java.util.List;
  */
 public class GogApiTest {
 
-    @Test
-    public void testLogin() throws Exception {
+    private GogApi api;
 
-        GogApi api = new GogApi();
+    @Before
+    public void setUp() throws Exception {
+
+        api = new GogApi();
 
         api.login(System.getProperty("gog-user"), System.getProperty("gog-password"));
+    }
+
+    @Test
+    public void testLogin() throws Exception {
 
         Assert.assertTrue(api.isLoggedIn());
     }
 
     @Test
     public void testListGames() throws Exception {
-
-        GogApi api = new GogApi();
-
-        api.login(System.getProperty("gog-user"), System.getProperty("gog-password"));
 
         List<GogGame> games = api.listGames();
 
@@ -44,9 +48,17 @@ public class GogApiTest {
     @Test
     public void testLoadDetails() throws Exception {
 
-        GogApi api = new GogApi();
+        GogGame game = new GogGame();
+        game.setId("1207659105");
+        game.setKey("divinity_2_developers_cut");
 
-        api.login(System.getProperty("gog-user"), System.getProperty("gog-password"));
+        DetailedGogGame details = api.loadDetails(game);
+
+        Assert.assertNotNull(details);
+    }
+
+    @Test
+    public void testTitle() {
 
         GogGame game = new GogGame();
         game.setId("1207659105");
@@ -55,7 +67,52 @@ public class GogApiTest {
         DetailedGogGame details = api.loadDetails(game);
 
         Assert.assertEquals("Divinity 2: Developer's Cut", details.getTitle());
+    }
 
+    @Test
+    public void testStoreLink() {
+
+        GogGame game = new GogGame();
+        game.setId("1207659105");
+        game.setKey("divinity_2_developers_cut");
+
+        DetailedGogGame details = api.loadDetails(game);
+
+        Assert.assertEquals("http://www.gog.com/gamecard/divinity_2_developers_cut", details.getStoreUrl());
+    }
+
+    @Test
+    public void testForumLink() {
+
+        GogGame game = new GogGame();
+        game.setId("1207659105");
+        game.setKey("divinity_2_developers_cut");
+
+        DetailedGogGame details = api.loadDetails(game);
+
+        Assert.assertEquals("http://www.gog.com/forum/divine_divinity_series", details.getForumUrl());
+    }
+
+    @Test
+    public void testSupportLink() {
+
+        GogGame game = new GogGame();
+        game.setId("1207659105");
+        game.setKey("divinity_2_developers_cut");
+
+        DetailedGogGame details = api.loadDetails(game);
+
+        Assert.assertEquals("http://www.gog.com/support/divinity_2_developers_cut", details.getSupportUrl());
+    }
+
+    @Test
+    public void testDownloaderDownloads() {
+
+        GogGame game = new GogGame();
+        game.setId("1207659105");
+        game.setKey("divinity_2_developers_cut");
+
+        DetailedGogGame details = api.loadDetails(game);
         Assert.assertEquals(5, details.getDownloaderDownloads().size());
         Assert.assertEquals("Windows installer, English", details.getDownloaderDownloads().get(0).getTitle());
         Assert.assertEquals("en", details.getDownloaderDownloads().get(0).getLanguage());
@@ -63,7 +120,16 @@ public class GogApiTest {
         Assert.assertEquals("5.9 GB", details.getDownloaderDownloads().get(0).getSize());
         Assert.assertEquals("1.1.0", details.getDownloaderDownloads().get(0).getVersion());
         Assert.assertEquals(GogDownload.DownloadOS.Win, details.getDownloaderDownloads().get(0).getOs());
+    }
 
+    @Test
+    public void testFileDownloads() {
+
+        GogGame game = new GogGame();
+        game.setId("1207659105");
+        game.setKey("divinity_2_developers_cut");
+
+        DetailedGogGame details = api.loadDetails(game);
         Assert.assertEquals(21, details.getFileDownloads().size());
         Assert.assertEquals("Windows installer, English (part 1 of 5)", details.getFileDownloads().get(0).getTitle());
         Assert.assertEquals("en", details.getFileDownloads().get(0).getLanguage());
@@ -71,6 +137,27 @@ public class GogApiTest {
         Assert.assertEquals("2 MB", details.getFileDownloads().get(0).getSize());
         Assert.assertEquals("1.1.0", details.getFileDownloads().get(0).getVersion());
         Assert.assertEquals(GogDownload.DownloadOS.Win, details.getFileDownloads().get(0).getOs());
+    }
+
+    @Test
+    public void testBonuses() {
+
+        GogGame game = new GogGame();
+        game.setId("1207659105");
+        game.setKey("divinity_2_developers_cut");
+
+        DetailedGogGame details = api.loadDetails(game);
+        Assert.assertEquals(13, details.getBonuses().size());
+
+        GogGameBonus bonus;
+
+        bonus = details.getBonusById("5002");
+        Assert.assertNotNull(bonus);
+        Assert.assertEquals("manual", bonus.getTitle());
+        Assert.assertEquals(GogGameBonus.BonusType.Manual, bonus.getType());
+        Assert.assertEquals("gogdownloader://divinity_2_developers_cut/5002", bonus.getDownloaderUrl());
+        Assert.assertEquals("https://secure.gog.com/downlink/file/divinity_2_developers_cut/5002", bonus.getFileUrl());
+        Assert.assertEquals("47 MB", bonus.getSize());
     }
 
 }

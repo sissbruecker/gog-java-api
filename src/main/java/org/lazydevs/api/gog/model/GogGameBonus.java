@@ -8,9 +8,9 @@ package org.lazydevs.api.gog.model;
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-public class GogGameExtra {
+public class GogGameBonus {
 
-    public enum ExtraType {
+    public enum BonusType {
         Manual,
         Guide,
         Wallpaper,
@@ -20,13 +20,25 @@ public class GogGameExtra {
         Other
     }
 
+    private String id;
+
     private String title;
 
-    private ExtraType type;
+    private BonusType type;
 
     private String fileUrl;
 
     private String downloaderUrl;
+
+    private String size;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getTitle() {
         return title;
@@ -36,11 +48,11 @@ public class GogGameExtra {
         this.title = title;
     }
 
-    public ExtraType getType() {
+    public BonusType getType() {
         return type;
     }
 
-    public void setType(ExtraType type) {
+    public void setType(BonusType type) {
         this.type = type;
     }
 
@@ -58,5 +70,13 @@ public class GogGameExtra {
 
     public void setDownloaderUrl(String downloaderUrl) {
         this.downloaderUrl = downloaderUrl;
+    }
+
+    public String getSize() {
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
     }
 }
