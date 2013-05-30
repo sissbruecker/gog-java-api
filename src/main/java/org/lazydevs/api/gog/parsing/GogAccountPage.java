@@ -1,9 +1,11 @@
 package org.lazydevs.api.gog.parsing;
 
+import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.lazydevs.api.gog.GogApiException;
 import org.lazydevs.api.gog.model.GogGame;
 import org.lazydevs.api.gog.util.Asserts;
 
@@ -25,6 +27,8 @@ public class GogAccountPage {
     private static final String SELECTOR_SHELF_GAME = "div.shelf_game";
     private static final String SELECTOR_SHELF_GAME_COVER = "img.shelf_game_box";
 
+    private static Logger log = Logger.getLogger(GogAccountPage.class);
+
     private Document document;
 
     public GogAccountPage(String htmlContent) {
@@ -44,22 +48,28 @@ public class GogAccountPage {
 
         for (Element gameElement : gameElements) {
 
-            GogGame game = new GogGame();
+            try {
 
-            Asserts.assertTrue(gameElement.hasAttr("data-gameid"), "Shelf game element has no id attribute: data-gameid");
-            Asserts.assertTrue(gameElement.hasAttr("data-gameindex"), "Shelf game element has no index attribute: data-gameindex");
+                GogGame game = new GogGame();
 
-            game.setId(gameElement.attr("data-gameid"));
-            game.setKey(gameElement.attr("data-gameindex"));
+                Asserts.assertTrue(gameElement.hasAttr("data-gameid"), "Shelf game element has no id attribute: data-gameid");
+                Asserts.assertTrue(gameElement.hasAttr("data-gameindex"), "Shelf game element has no index attribute: data-gameindex");
 
-            Element coverImageElement = gameElement.select(SELECTOR_SHELF_GAME_COVER).first();
+                game.setId(gameElement.attr("data-gameid"));
+                game.setKey(gameElement.attr("data-gameindex"));
 
-            if (coverImageElement != null) {
+                Element coverImageElement = gameElement.select(SELECTOR_SHELF_GAME_COVER).first();
 
-                game.setCoverUrl("http://gog.com" + coverImageElement.attr("src"));
+                if (coverImageElement != null) {
+
+                    game.setCoverUrl("http://gog.com" + coverImageElement.attr("src"));
+                }
+
+                games.add(game);
+
+            } catch (GogApiException e) {
+                log.warn(String.format("Error parsing game data. element=%s", gameElement.toString()), e);
             }
-
-            games.add(game);
         }
 
         return games;

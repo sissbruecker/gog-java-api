@@ -1,5 +1,6 @@
 package org.lazydevs.api.gog;
 
+import org.apache.log4j.BasicConfigurator;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,6 +26,8 @@ public class GogApiTest {
 
     @Before
     public void setUp() throws Exception {
+
+        BasicConfigurator.configure();
 
         api = new GogApi();
 
