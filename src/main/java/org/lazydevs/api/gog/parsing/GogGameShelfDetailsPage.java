@@ -37,19 +37,16 @@ public class GogGameShelfDetailsPage {
     private static final String SELECTOR_DOWNLOAD = "div.lang-item";
     private static final String SELECTOR_DOWNLOAD_PART = "a.list_game_item";
     private static final String SELECTOR_DOWNLOAD_TITLE_DOWNLOADER = "span.text.normal";
-    private static final String SELECTOR_DOWNLOAD_TITLE_FILE = "span.light_un";
+    private static final String SELECTOR_DOWNLOAD_TITLE_FILE = "span.details-underline";
     private static final String SELECTOR_DOWNLOAD_SIZE = "span.size";
     private static final String SELECTOR_DOWNLOAD_VERSION = "span.version";
 
     private static final String SELECTOR_BONUS_DOWNLOADER_LIST = "div.shelf_det_right > div.bonus_content_list.downloader";
     private static final String SELECTOR_BONUS_FILE_LIST = "div.shelf_det_right > div.bonus_content_list.browser";
 
-    private static final String SELECTOR_DOWNLOADER_BONUS_NAME = "span.med_un";
-    private static final String SELECTOR_FILE_BONUS_NAME = "span.med_un";
+    private static final String SELECTOR_DOWNLOADER_BONUS_NAME = "span.details-underline";
+    private static final String SELECTOR_FILE_BONUS_NAME = "span.details-underline";
     private static final String SELECTOR_FILE_BONUS_SIZE = "span.size";
-
-    private static final String SELECTOR_BONUS_TYPE = "span.list_bonus_item";
-
 
     private Document document;
 
@@ -270,11 +267,7 @@ public class GogGameShelfDetailsPage {
                 bonus.setTitle(titleElement.text());
 
                 // Type
-                Element typeElement = bonusElement.select(SELECTOR_BONUS_TYPE).first();
-
-                Asserts.assertNotNull(titleElement, "Can not find type element: " + SELECTOR_BONUS_TYPE);
-
-                bonus.setType(parseBonusType(typeElement.classNames()));
+                bonus.setType(parseBonusType(bonusElement.classNames()));
 
                 details.getBonuses().add(bonus);
             }
@@ -307,11 +300,7 @@ public class GogGameShelfDetailsPage {
                 bonus.setTitle(titleElement.text());
 
                 // Type
-                Element typeElement = bonusElement.select(SELECTOR_BONUS_TYPE).first();
-
-                Asserts.assertNotNull(typeElement, "Can not find type element: " + SELECTOR_BONUS_TYPE);
-
-                bonus.setType(parseBonusType(typeElement.classNames()));
+                bonus.setType(parseBonusType(bonusElement.classNames()));
 
                 details.getBonuses().add(bonus);
             }
@@ -324,7 +313,7 @@ public class GogGameShelfDetailsPage {
             bonus.setSize(sizeElement.text());
 
             // File URL
-            bonus.setFileUrl("https://secure.gog.com" + url);
+            bonus.setFileUrl(url);
         }
     }
 

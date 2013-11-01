@@ -154,12 +154,12 @@ public class GogApiTest {
 
         GogGameBonus bonus;
 
-        bonus = details.getBonusById("5002");
+        bonus = details.getBonusById("18563");
         Assert.assertNotNull(bonus);
         Assert.assertEquals("manual", bonus.getTitle());
         Assert.assertEquals(GogGameBonus.BonusType.Manual, bonus.getType());
-        Assert.assertEquals("gogdownloader://divinity_2_developers_cut/5002", bonus.getDownloaderUrl());
-        Assert.assertEquals("https://secure.gog.com/downlink/file/divinity_2_developers_cut/5002", bonus.getFileUrl());
+        Assert.assertEquals("gogdownloader://divinity_2_developers_cut/18563", bonus.getDownloaderUrl());
+        Assert.assertEquals("https://secure.gog.com/downlink/file/divinity_2_developers_cut/18563", bonus.getFileUrl());
         Assert.assertEquals("47 MB", bonus.getSize());
     }
 

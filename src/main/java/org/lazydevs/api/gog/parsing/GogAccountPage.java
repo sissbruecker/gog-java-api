@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class GogAccountPage {
 
-    private static final String SELECTOR_SHELF = "#shelfGamesListAll";
+    private static final String SELECTOR_SHELF = "#shelfGamesList";
     private static final String SELECTOR_SHELF_GAME = "div.shelf_game";
     private static final String SELECTOR_SHELF_GAME_COVER = "img.shelf_game_box";
 
